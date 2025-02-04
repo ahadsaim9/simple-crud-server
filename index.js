@@ -44,10 +44,24 @@ async function run() {
     });
     /* *************** Update end *************** */
     /* *************** put *************** */
-    app.put("/users/:id", (req, res) => {
+    app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
-      const updatedUser = req.body;
-      console.log(id, updatedUser);
+      const user = req.body;
+      console.log(id, user);
+      const filter = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          name: user.name,
+          email: user.email,
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateUser,
+        option
+      );
+      res.send(result);
     });
 
     /* *************** Post *************** */
